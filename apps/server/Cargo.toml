@@ -1,0 +1,36 @@
+[package]
+name = "anisp-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+anisp-clickhouse-store.workspace = true
+anisp-common.workspace = true
+anisp-config.workspace = true
+anisp-context.workspace = true
+anisp-event.workspace = true
+anisp-git-ingest.workspace = true
+anisp-git-context.workspace = true
+anisp-postgres-store.workspace = true
+anisp-support.workspace = true
+anisp-support-outbox.workspace = true
+axum.workspace = true
+chrono.workspace = true
+serde.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+async-trait.workspace = true
+serde_json.workspace = true
+tower.workspace = true
+anisp-git-collector.workspace = true
+git2.workspace = true
+tempfile = "3"
+
+[lints]
+workspace = true

@@ -1,0 +1,53 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.8
+    container_name: anisp-clickhouse
+    environment:
+      CLICKHOUSE_DB: ${ANISP_CLICKHOUSE_DATABASE:-anisp}
+      CLICKHOUSE_USER: ${ANISP_CLICKHOUSE_USER:-anisp}
+      CLICKHOUSE_PASSWORD: ${ANISP_CLICKHOUSE_PASSWORD:-anisp}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          clickhouse-client
+          --user "$${CLICKHOUSE_USER}"
+          --password "$${CLICKHOUSE_PASSWORD}"
+          --database "$${CLICKHOUSE_DB}"
+          --query "SELECT 1"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: anisp-postgres
+    environment:
+      POSTGRES_DB: ${ANISP_POSTGRES_DATABASE:-anisp}
+      POSTGRES_USER: ${ANISP_POSTGRES_USER:-anisp}
+      POSTGRES_PASSWORD: ${ANISP_POSTGRES_PASSWORD:-anisp}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready --username "$${POSTGRES_USER}" --dbname "$${POSTGRES_DB}"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  clickhouse_data:
+  postgres_data:
